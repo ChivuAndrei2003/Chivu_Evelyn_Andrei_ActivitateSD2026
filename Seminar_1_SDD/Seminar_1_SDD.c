@@ -64,20 +64,47 @@ struct Depozit* copiazaPrimeleNElemente(struct Depozit* vector, int nrElemente, 
 
 void dezalocare(struct Depozit** vector, int* nrElemente) {
 	//dezalocam elementele din vector si vectorul
+	for (int i = 0; i < *nrElemente; i++) {
+		free((*vector)[i].denumire);
+	}
+	free(*vector);
+	*nrElemente = 0;
+	*vector = NULL;
 }
 
 void copiazaAnumiteElemente(struct Depozit* vector, char nrElemente, float prag, struct Depozit** vectorNou, int* dimensiune) {
 	//parametrul prag poate fi modificat in functie de 
     // tipul atributului ales pentru a indeplini o conditie
 	//este creat un nou vector cu elementele care indeplinesc acea conditie
+
+	*dimensiune = 0;
+	for (int i = 0; i < nrElemente; i++) {
+		if (vector[i].suprafata < prag) {
+			(*dimensiune)++;
+		}
+	}
+	*vectorNou = malloc(sizeof(Depozit) * (*dimensiune));
+	*dimensiune = 0;
+	for (int i = 0; i < nrElemente; i++) {
+		if (vector[i].suprafata < prag) {
+			(*vectorNou)[*dimensiune] = copiaza(vector[i]);
+			(*dimensiune)++;
+		}
+	}
 }
 
-struct Depozit getPrimulElementConditionat(struct Depozit* vector, int nrElemente, const char* conditie) {
+struct Depozit getPrimulElementConditionat(struct Depozit* vector, int nrElemente, const char* numeCautat) {
 	//trebuie cautat elementul care indeplineste o conditie
 	//dupa atributul de tip char*. Acesta este returnat.
-	struct Depozit s;
-	s.id = 1;
+	 Depozit s;
+	s.id = -1;
 
+	for (int i = 0; i < nrElemente; i++) {
+		if (strcmp(numeCautat, vector[i].denumire) == 0) {
+			s = copiaza(vector[i]);
+			
+		}
+	}
 	return s;
 }
 
@@ -99,5 +126,24 @@ int main() {
 	int nrCopiate = 2;
 	Depozit* scurt = copiazaPrimeleNElemente(vector, nrDepozite, nrCopiate);
 	afisareVector(scurt, nrCopiate);
+
+	dezalocare(&scurt, &nrCopiate);
+    
+	Depozit* filtrat = NULL;
+	int dimensiune = 0;
+	copiazaAnumiteElemente(vector, nrDepozite, 50,&filtrat,&dimensiune );
+	printf("\n Vector filtrat: \n");
+	afisareVector(filtrat, dimensiune);
+	dezalocare(&filtrat, &dimensiune);
+
+	Depozit depozitCautat = getPrimulElementConditionat(vector, nrDepozite, "Amazon");
+	printf("\n Depozit cautat: \n");
+	afisare(depozitCautat);
+	if (depozitCautat.id != -1) {
+		free(depozitCautat.denumire);
+	}
+
+	free(depozit.denumire);
+	dezalocare(&vector, &nrCopiate);
 	return 0;
 }
