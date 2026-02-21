@@ -18,5 +18,13 @@
     <ClCompile Include="Seminar_1_SDD.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ListeInlatuite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="masini.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
