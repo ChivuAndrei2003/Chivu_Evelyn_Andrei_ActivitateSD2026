@@ -1,49 +1,49 @@
 #include<stdio.h>
 #include<malloc.h>
 
-struct Sablon {
+struct Depozit {
 	int id;
-	int ;
-	//char* ;
-	float ;
-	char ;
+	float suprafata;
+	int volum;
+	char* denumire ;
+	char clasa ;
 };
-struct Sablon initializare(/*parametri necesari*/) {
-	struct Sablon s;
+struct Depozit initializare(/*parametri necesari*/) {
+	struct Depozit s;
 	s.id = 1;
 	//initializare structura 
 		return s;
 }
 
-void afisare(struct Sablon s) {
+void afisare(struct Depozit s) {
 	//afisarea tuturor atributelor.
 }
 
-void afisareVector(struct Sablon* vector, int nrElemente) {
+void afisareVector(struct Depozit* vector, int nrElemente) {
 	//afisarea elementelor din vector apeland functia afisare
 }
 
-struct Sablon* copiazaPrimeleNElemente(struct Sablon* vector, int nrElemente, int nrElementeCopiate) {
+struct Depozit* copiazaPrimeleNElemente(struct Depozit* vector, int nrElemente, int nrElementeCopiate) {
 	//copiem intr-un vector nou pe care il vom returna primele nrElementeCopiate
-	struct Sablon *vectorNou=NULL;
+	struct Depozit *vectorNou=NULL;
 
 	return vectorNou;
 }
 
-void dezalocare(struct Sablon** vector, int* nrElemente) {
+void dezalocare(struct Depozit** vector, int* nrElemente) {
 	//dezalocam elementele din vector si vectorul
 }
 
-void copiazaAnumiteElemente(struct Sablon* vector, char nrElemente, float prag, struct Sablon** vectorNou, int* dimensiune) {
+void copiazaAnumiteElemente(struct Depozit* vector, char nrElemente, float prag, struct Depozit** vectorNou, int* dimensiune) {
 	//parametrul prag poate fi modificat in functie de 
     // tipul atributului ales pentru a indeplini o conditie
 	//este creat un nou vector cu elementele care indeplinesc acea conditie
 }
 
-struct Sablon getPrimulElementConditionat(struct Sablon* vector, int nrElemente, const char* conditie) {
+struct Depozit getPrimulElementConditionat(struct Depozit* vector, int nrElemente, const char* conditie) {
 	//trebuie cautat elementul care indeplineste o conditie
 	//dupa atributul de tip char*. Acesta este returnat.
-	struct Sablon s;
+	struct Depozit s;
 	s.id = 1;
 
 	return s;
