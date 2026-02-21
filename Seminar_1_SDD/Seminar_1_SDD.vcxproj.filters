@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Seminar_1_SDD.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ListeInlatuite.c">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -1,8 +1,6 @@
 #include<stdio.h>
 #include<malloc.h>
-
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -64,9 +62,15 @@ void afisareMasina(Masina masina) {
 	printf("Serie: %c\n\n", masina.serie);
 }
 
-void afisareListaMasini(/*lista de masini*/) {
+void afisareListaMasini(Nod* lista) {
 //	afiseaza toate elemente de tip masina din lista simplu inlantuita
 	//prin apelarea functiei afisareMasina()
+
+	while (lista) {
+		afisareMasina(lista->info);
+		
+
+	}
 }
 
 void adaugaMasinaInLista(Nod* *lista, Masina masinaNoua) {
@@ -137,5 +141,6 @@ float calculeazaPretulMasinilorUnuiSofer(/*lista masini*/ const char* numeSofer)
 int main() {
 	Nod* lista = citireListaMasiniDinFisier("masini.txt");
 
+	afisareListaMasini(lista);
 	return 0;
 }
