@@ -1,6 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<malloc.h>
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 #include <string.h>
 
@@ -119,8 +119,16 @@ Nod* citireListaMasiniDinFisier(const char* numeFisier) {
 	
 }
 
-void dezalocareListaMasini(/*lista de masini*/) {
+void dezalocareListaMasini(Nod** lista) {
 //sunt dezalocate toate masinile si lista de elemente
+	while (*lista) {
+		free((*lista)->info.model);
+		free((*lista)->info.numeSofer);
+		Nod* p = *lista;
+		*lista = (*lista).next;
+		free(p);
+	}
+
 }
 
 float calculeazaPretMediu(/*lista de masini*/) {
@@ -142,5 +150,6 @@ int main() {
 	Nod* lista = citireListaMasiniDinFisier("masini.txt");
 
 	afisareListaMasini(lista);
+	dezalocareListaMasini(&lista);
 	return 0;
 }
