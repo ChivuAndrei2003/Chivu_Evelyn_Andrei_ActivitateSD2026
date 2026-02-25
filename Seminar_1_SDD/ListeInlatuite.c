@@ -1,15 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include<stdio.h>
-#include<malloc.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 //trebuie sa folositi fisierul masini.txt
 //sau va creati un alt fisier cu alte date
-
-
-typedef struct Nod Nod;
-
 
 struct StructuraMasina {
 	int id;
@@ -19,6 +14,7 @@ struct StructuraMasina {
 	char* numeSofer;
 	unsigned char serie;
 };
+typedef struct Nod Nod;
 typedef struct StructuraMasina Masina;
 
 //creare structura pentru un nod dintr-o lista simplu inlantuita
@@ -43,11 +39,11 @@ Masina citireMasinaDinFisier(FILE* file) {
 	m1.pret= atof(strtok(NULL, sep));
 	aux = strtok(NULL, sep);
 	m1.model = malloc(strlen(aux) + 1);
-	strcpy_s(m1.model, strlen(aux) + 1, aux);
+	strcpy(m1.model, aux);
 
 	aux = strtok(NULL, sep);
 	m1.numeSofer = malloc(strlen(aux) + 1);
-	strcpy_s(m1.numeSofer, strlen(aux) + 1, aux);
+	strcpy(m1.numeSofer, aux);
 
 	m1.serie = *strtok(NULL, sep);
 	return m1;
@@ -66,10 +62,9 @@ void afisareListaMasini(Nod* lista) {
 //	afiseaza toate elemente de tip masina din lista simplu inlantuita
 	//prin apelarea functiei afisareMasina()
 
-	while (lista) {
+        while (lista) {
 		afisareMasina(lista->info);
-		
-
+		lista = lista->next;
 	}
 }
 
@@ -90,6 +85,7 @@ void adaugaMasinaInLista(Nod* *lista, Masina masinaNoua) {
 		while (p->next ) {
 			p = p->next;
 		}
+		p->next = nou;
 	}
 }
 
@@ -105,13 +101,10 @@ Nod* citireListaMasiniDinFisier(const char* numeFisier) {
     //	ATENTIE - la final inchidem fisierul/stream-ul
 
 	FILE* f = fopen(numeFisier, "r");
-
 	Nod* lista = NULL;
 	while (!feof(f)) {
 		Masina m = citireMasinaDinFisier(f);
 		adaugaMasinaInLista(&lista, m);
-
-
 	}
 	fclose(f);
 	return lista;
@@ -125,7 +118,7 @@ void dezalocareListaMasini(Nod** lista) {
 		free((*lista)->info.model);
 		free((*lista)->info.numeSofer);
 		Nod* p = *lista;
-		*lista = (*lista).next;
+		*lista = (*lista)->next;
 		free(p);
 	}
 
@@ -147,8 +140,9 @@ float calculeazaPretulMasinilorUnuiSofer(/*lista masini*/ const char* numeSofer)
 }
 
 int main() {
-	Nod* lista = citireListaMasiniDinFisier("masini.txt");
+	
 
+	Nod* lista = citireListaMasiniDinFisier("masini2.txt");
 	afisareListaMasini(lista);
 	dezalocareListaMasini(&lista);
 	return 0;
