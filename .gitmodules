@@ -1,0 +1,3 @@
+[submodule "mini-operating-system"]
+	path = mini-operating-system
+	url = git@github.com:ChivuAndrei2003/OS--project.git
