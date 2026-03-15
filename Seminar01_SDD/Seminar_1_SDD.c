@@ -1,8 +1,8 @@
-//#define _CRT_SECURE_NO_WARNINGS
-/*
+#define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
-#include<malloc.h>
-
+#include<malloc/malloc.h>
+#include <string.h>
+#include <stdlib.h>
 typedef struct Depozit Depozit;
 
 struct Depozit {
@@ -17,7 +17,7 @@ struct Depozit initializare(int id,float suprafata,int volum,const char* denumir
 	s.id = id;
 	s.suprafata = suprafata;
 	s.volum = volum;
-	s.denumire =  (char*)malloc(sizeof(char)*(strlen(denumire) +1));
+	s.denumire =  (char*)malloc(sizeof(char)*(strlen(denumire) + 1));
 	strcpy(s.denumire, denumire);
 	s.clasa = clasa;	
 
@@ -59,7 +59,7 @@ struct Depozit* copiazaPrimeleNElemente(struct Depozit* vector, int nrElemente, 
 		return vectorNou;
 	}
 	else {
-		return NULL;
+		return 	NULL;
 	}
 	
 }
@@ -149,4 +149,3 @@ int main() {
 	dezalocare(&vector, &nrCopiate);
 	return 0;
 }
-*/

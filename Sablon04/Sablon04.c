@@ -14,18 +14,9 @@ struct StructuraMasina {
 	char* numeSofer;
 	unsigned char serie;
 };
-typedef struct Nod Nod;
 typedef struct StructuraMasina Masina;
 
 //creare structura pentru un nod dintr-o lista simplu inlantuita
-
-struct Nod {
-	Masina info;
-	Nod* next;
-};
-
-
-
 
 Masina citireMasinaDinFisier(FILE* file) {
 	char buffer[100];
@@ -39,11 +30,11 @@ Masina citireMasinaDinFisier(FILE* file) {
 	m1.pret= atof(strtok(NULL, sep));
 	aux = strtok(NULL, sep);
 	m1.model = malloc(strlen(aux) + 1);
-	strcpy(m1.model, aux);
+	strcpy_s(m1.model, strlen(aux) + 1, aux);
 
 	aux = strtok(NULL, sep);
 	m1.numeSofer = malloc(strlen(aux) + 1);
-	strcpy(m1.numeSofer, aux);
+	strcpy_s(m1.numeSofer, strlen(aux) + 1, aux);
 
 	m1.serie = *strtok(NULL, sep);
 	return m1;
@@ -58,70 +49,27 @@ void afisareMasina(Masina masina) {
 	printf("Serie: %c\n\n", masina.serie);
 }
 
-void afisareListaMasini(Nod* lista) {
-//	afiseaza toate elemente de tip masina din lista simplu inlantuita
+void afisareListaMasini(/*lista de masini*/) {
+	//afiseaza toate elemente de tip masina din lista simplu inlantuita
 	//prin apelarea functiei afisareMasina()
-
-        while (lista) {
-		afisareMasina(lista->info);
-		lista = lista->next;
-	}
 }
 
-void adaugaMasinaInLista(Nod* *lista, Masina masinaNoua) {
+void adaugaMasinaInLista(/*lista de masini*/ Masina masinaNoua) {
 	//adauga la final in lista primita o noua masina pe care o primim ca parametru
-	Nod* nou= malloc(sizeof(Nod));
-	nou->info = masinaNoua;
-	nou->next = NULL;
-
-	if (*lista == NULL) {
-		*lista = malloc(sizeof(Nod));
-		(*lista)->info = masinaNoua; //ne asumam ca realizam shallow copy
-		(*lista)->next = NULL;
-
-	}
-	else {
-		Nod* p = *lista;
-		while (p->next ) {
-			p = p->next;
-		}
-		p->next = nou;
-	}
 }
 
 void adaugaLaInceputInLista(/*lista de masini*/ Masina masinaNoua) {
 	//adauga la inceputul listei o noua masina pe care o primim ca parametru
-
-
 }
 
-Nod* citireListaMasiniDinFisier(const char* numeFisier) {
+void* citireListaMasiniDinFisier(const char* numeFisier) {
 	//functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
 	//prin apelul repetat al functiei citireMasinaDinFisier()
-    //	ATENTIE - la final inchidem fisierul/stream-ul
-
-	FILE* f = fopen(numeFisier, "r");
-	Nod* lista = NULL;
-	while (!feof(f)) {
-		Masina m = citireMasinaDinFisier(f);
-		adaugaMasinaInLista(&lista, m);
-	}
-	fclose(f);
-	return lista;
-
-	
+	//ATENTIE - la final inchidem fisierul/stream-ul
 }
 
-void dezalocareListaMasini(Nod** lista) {
-//sunt dezalocate toate masinile si lista de elemente
-	while (*lista) {
-		free((*lista)->info.model);
-		free((*lista)->info.numeSofer);
-		Nod* p = *lista;
-		*lista = (*lista)->next;
-		free(p);
-	}
-
+void dezalocareListaMasini(/*lista de masini*/) {
+	//sunt dezalocate toate masinile si lista de elemente
 }
 
 float calculeazaPretMediu(/*lista de masini*/) {
@@ -140,10 +88,7 @@ float calculeazaPretulMasinilorUnuiSofer(/*lista masini*/ const char* numeSofer)
 }
 
 int main() {
-	
 
-	Nod* lista = citireListaMasiniDinFisier("masini2.txt");
-	afisareListaMasini(lista);
-	dezalocareListaMasini(&lista);
+
 	return 0;
 }
