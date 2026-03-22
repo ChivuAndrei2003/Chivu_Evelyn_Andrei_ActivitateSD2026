@@ -6,89 +6,212 @@
 //trebuie sa folositi fisierul masini.txt
 //sau va creati un alt fisier cu alte date
 
-struct StructuraMasina {
+struct StructuraAvion
+{
 	int id;
-	int nrUsi;
+	int nrLocuri;
 	float pret;
 	char* model;
-	char* numeSofer;
+	char* numePilot;
 	unsigned char serie;
 };
-typedef struct StructuraMasina Masina;
+typedef struct StructuraAvion Avion;
+
+typedef struct Nod Nod;
+
+struct Nod
+{
+	Avion info;
+	Nod* urm;
+};
 
 //creare structura pentru un nod dintr-o lista simplu inlantuita
-
-Masina citireMasinaDinFisier(FILE* file) {
+Avion citireAvionDinFisier (FILE* file)
+{
 	char buffer[100];
 	char sep[3] = ",\n";
-	fgets(buffer, 100, file);
+	fgets (buffer,100,file);
 	char* aux;
-	Masina m1;
-	aux = strtok(buffer, sep);
-	m1.id = atoi(aux);
-	m1.nrUsi = atoi(strtok(NULL, sep));
-	m1.pret= atof(strtok(NULL, sep));
-	aux = strtok(NULL, sep);
-	m1.model = malloc(strlen(aux) + 1);
-	strcpy_s(m1.model, strlen(aux) + 1, aux);
+	Avion m1;
+	aux = strtok (buffer,sep);
+	m1.id = atoi (aux);
+	m1.nrLocuri = atoi (strtok (NULL,sep));
+	m1.pret = atof (strtok (NULL,sep));
+	aux = strtok (NULL,sep);
+	m1.model = malloc (strlen (aux) + 1);
+	strcpy(m1.model,aux);
 
-	aux = strtok(NULL, sep);
-	m1.numeSofer = malloc(strlen(aux) + 1);
-	strcpy_s(m1.numeSofer, strlen(aux) + 1, aux);
+	aux = strtok (NULL,sep);
+	m1.numePilot = malloc (strlen (aux) + 1);
+	strcpy (m1.numePilot,aux);
 
-	m1.serie = *strtok(NULL, sep);
+	m1.serie = *strtok (NULL,sep);
 	return m1;
 }
 
-void afisareMasina(Masina masina) {
-	printf("Id: %d\n", masina.id);
-	printf("Nr. usi : %d\n", masina.nrUsi);
-	printf("Pret: %.2f\n", masina.pret);
-	printf("Model: %s\n", masina.model);
-	printf("Nume sofer: %s\n", masina.numeSofer);
-	printf("Serie: %c\n\n", masina.serie);
+void afisarAvion(Avion avion)
+{
+	printf ("Id: %d\n",avion.id);
+	printf ("Nr. locuri : %d\n",avion.nrLocuri);
+	printf ("Pret: %.2f\n",avion.pret);
+	printf ("Model: %s\n",avion.model);
+	printf ("Nume spilot : %s\n",avion.numePilot);
+	printf ("Serie: %c\n\n",avion.serie);
 }
 
-void afisareListaMasini(/*lista de masini*/) {
-	//afiseaza toate elemente de tip masina din lista simplu inlantuita
-	//prin apelarea functiei afisareMasina()
+void afisareListaAvioane (Nod* cap)
+{
+	//afiseaza toate elemente de tip Avion din lista simplu inlantuita
+	//prin apelarea functiei afisar Avion()
+
+	while(cap)
+	{
+		afisarAvion(cap->info);
+		cap = cap->urm;
+	}
 }
 
-void adaugaMasinaInLista(/*lista de masini*/ Masina masinaNoua) {
-	//adauga la final in lista primita o noua masina pe care o primim ca parametru
+void adaugAvionInLista (Nod** cap,Avion avionNou)
+{
+	//adauga la final in lista primita un nou Avion pe care-l primim ca parametru
+
+	Nod* nou = (Nod*)malloc(sizeof(Nod));
+	nou->info = avionNou;
+	nou->urm = NULL;
+
+	if((*cap) == NULL)
+	{
+		*cap = nou;
+	}
+	else
+	{
+		Nod* p = *cap;
+		while(p->urm)
+		{
+			p = p->urm;
+		}
+		p->urm = nou;
+	}
 }
 
-void adaugaLaInceputInLista(/*lista de masini*/ Masina masinaNoua) {
-	//adauga la inceputul listei o noua masina pe care o primim ca parametru
+void adaugaLaInceputInLista (Nod** cap,Avion avionNou)
+{
+	//adauga la inceputul listei o noua Avion pe care o primim ca parametru
+	Nod* nou = (Nod*)malloc(sizeof(Nod));
+	nou->info = avionNou;
+	nou->urm = *cap;
+	*cap = nou;
+
 }
 
-void* citireListaMasiniDinFisier(const char* numeFisier) {
+void* citireListaAvionDinFisier (const char* numeFisier)
+{
 	//functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
-	//prin apelul repetat al functiei citireMasinaDinFisier()
+	//prin apelul repetat al functiei citir AvionDinFisier()
 	//ATENTIE - la final inchidem fisierul/stream-ul
+
+	FILE* f = fopen(numeFisier,"r");
+	Nod* lista = NULL;
+
+	while(!feof(f))
+	{
+		adaugaLaInceputInLista(&lista,citireAvionDinFisier(f));
+
+	}
+	fclose(f);
+	return lista;
 }
 
-void dezalocareListaMasini(/*lista de masini*/) {
+void dezalocareListaAvioane (Nod** cap)
+{
 	//sunt dezalocate toate masinile si lista de elemente
+
+	while((*cap) != NULL)
+	{
+		Nod* aux = (*cap);
+		*cap = (*cap)->urm;
+		free(aux->info.numePilot);
+		free(aux->info.model);
+		free(aux);
+	}
 }
 
-float calculeazaPretMediu(/*lista de masini*/) {
+float calculeazaPretMediu (Nod* lista)
+{
 	//calculeaza pretul mediu al masinilor din lista.
-	return 0;
+	int count = 0;
+	float sum = 0;
+	while(lista)
+	{
+		sum += lista->info.pret;
+		count++;
+		lista = lista->urm;
+	}
+
+	return (count > 0) ? sum / count : 0;
 }
 
-void stergeMasiniDinSeria(/*lista masini*/ char serieCautata) {
+void stergeAvionDinSeria (Nod** cap,char serieCautata)
+{
 	//sterge toate masinile din lista care au seria primita ca parametru.
-	//tratati situatia ca masina se afla si pe prima pozitie, si pe ultima pozitie
+	//tratati situatia ca Avion se afla si pe prima pozitie, si pe ultima pozitie
+
+	Nod* p = *cap;
+	Nod* anterior = NULL;
+	while(p != NULL)
+	{
+		if(p->info.serie == serieCautata)
+		{
+			Nod* deSters = p;
+
+			if(anterior == NULL)
+			{
+				*cap = p->urm;
+			}
+			else
+			{
+				anterior->urm = p->urm;
+			}
+			p = p->urm;
+
+			free(deSters->info.model);
+			free(deSters->info.numePilot);
+			free(deSters);
+		}
+
+		else
+		{
+			anterior = p;
+			p = p->urm;
+		}
+	}
 }
 
-float calculeazaPretulMasinilorUnuiSofer(/*lista masini*/ const char* numeSofer) {
+float calculeazaPretulAvionuluiUnuiPilot (Nod* lista,const char* numePilot)
+{
 	//calculeaza pretul tuturor masinilor unui sofer.
-	return 0;
+	float sum = 0;
+	while(lista)
+	{
+		if(strcmp(numePilot,lista->info.numePilot) == 0)
+		{
+			sum += lista->info.pret;
+		}
+		lista = lista->urm;
+	}
+	return sum;
 }
 
-int main() {
+int main ()
+{
+	Nod* cap = NULL;
+	cap = citireAvionDinFisier("avion.txt");
 
+	afisareListaAvioane(cap);
 
+	printf("%f \n\n",calculeazaPretMediu(cap));
+	printf("%f \n\n",calculeazaPretulAvionuluiUnuiPilot(cap,"Ionescu"));
+
+	dezalocareListaAvioane(&cap);
 	return 0;
 }
