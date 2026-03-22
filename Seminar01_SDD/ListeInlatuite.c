@@ -5,7 +5,8 @@
 
 
 
-struct StructuraMasina {
+struct StructuraAvion
+{
     int id;
     int nrUsi;
     float pret;
@@ -14,54 +15,60 @@ struct StructuraMasina {
     unsigned char serie;
 };
 
-typedef struct StructuraMasina Masina;
+typedef struct StructuraAvion Masina;
 typedef struct Nod Nod;
 
-struct Nod {
+struct Nod
+{
     Masina info;
     Nod* next;
 };
 
-int citireMasinaDinFisier(FILE* file, Masina* m1) {
+int citireMasinaDinFisier(FILE* file,Masina* m1)
+{
     char buffer[100];
-    char sep[] = ",\n";
+    char sep[ ] = ",\n";
 
-    if (fgets(buffer, sizeof(buffer), file) == NULL) {
+    if(fgets(buffer,sizeof(buffer),file) == NULL)
+    {
         return 0;
     }
 
-    char* aux = strtok(buffer, sep);
-    if (aux == NULL) return 0;
+    char* aux = strtok(buffer,sep);
+    if(aux == NULL) return 0;
     m1->id = atoi(aux);
 
-    aux = strtok(NULL, sep);
-    if (aux == NULL) return 0;
+    aux = strtok(NULL,sep);
+    if(aux == NULL) return 0;
     m1->nrUsi = atoi(aux);
 
-    aux = strtok(NULL, sep);
-    if (aux == NULL) return 0;
+    aux = strtok(NULL,sep);
+    if(aux == NULL) return 0;
     m1->pret = (float)atof(aux);
 
-    aux = strtok(NULL, sep);
-    if (aux == NULL) return 0;
+    aux = strtok(NULL,sep);
+    if(aux == NULL) return 0;
     m1->model = malloc(strlen(aux) + 1);
-    if (m1->model == NULL) return 0;
-    strcpy(m1->model, aux);
+    if(m1->model == NULL) return 0;
+    strcpy(m1->model,aux);
 
-    aux = strtok(NULL, sep);
-    if (aux == NULL) {
+    aux = strtok(NULL,sep);
+    if(aux == NULL)
+    {
         free(m1->model);
         return 0;
     }
     m1->numeSofer = malloc(strlen(aux) + 1);
-    if (m1->numeSofer == NULL) {
+    if(m1->numeSofer == NULL)
+    {
         free(m1->model);
         return 0;
     }
-    strcpy(m1->numeSofer, aux);
+    strcpy(m1->numeSofer,aux);
 
-    aux = strtok(NULL, sep);
-    if (aux == NULL) {
+    aux = strtok(NULL,sep);
+    if(aux == NULL)
+    {
         free(m1->model);
         free(m1->numeSofer);
         return 0;
@@ -71,43 +78,53 @@ int citireMasinaDinFisier(FILE* file, Masina* m1) {
     return 1;
 }
 
-void afisareMasina(Masina masina) {
-    printf("Id: %d\n", masina.id);
-    printf("Nr. usi: %d\n", masina.nrUsi);
-    printf("Pret: %.2f\n", masina.pret);
-    printf("Model: %s\n", masina.model);
-    printf("Nume sofer: %s\n", masina.numeSofer);
-    printf("Serie: %c\n\n", masina.serie);
+void afisareMasina(Masina masina)
+{
+    printf("Id: %d\n",masina.id);
+    printf("Nr. usi: %d\n",masina.nrUsi);
+    printf("Pret: %.2f\n",masina.pret);
+    printf("Model: %s\n",masina.model);
+    printf("Nume sofer: %s\n",masina.numeSofer);
+    printf("Serie: %c\n\n",masina.serie);
 }
 
-void afisareListaMasini(Nod* lista) {
-    while (lista) {
+void afisareListaMasini(Nod* lista)
+{
+    while(lista)
+    {
         afisareMasina(lista->info);
         lista = lista->next;
     }
 }
 
-void adaugaMasinaInLista(Nod** lista, Masina masinaNoua) {
+void adaugaMasinaInLista(Nod** lista,Masina masinaNoua)
+{
     Nod* nou = malloc(sizeof(Nod));
-    if (nou == NULL) return;
+    if(nou == NULL) return;
 
     nou->info = masinaNoua;
     nou->next = NULL;
 
-    if (*lista == NULL) {
+    if(*lista == NULL)
+    {
         *lista = nou;
-    } else {
+    }
+    else
+    {
         Nod* p = *lista;
-        while (p->next) {
+        while(p->next)
+        {
             p = p->next;
         }
         p->next = nou;
     }
 }
 
-Nod* citireListaMasiniDinFisier(const char* numeFisier) {
-    FILE* f = fopen(numeFisier, "r");
-    if (f == NULL) {
+Nod* citireListaMasiniDinFisier(const char* numeFisier)
+{
+    FILE* f = fopen(numeFisier,"r");
+    if(f == NULL)
+    {
         printf("Nu s-a putut deschide fisierul.\n");
         return NULL;
     }
@@ -115,16 +132,19 @@ Nod* citireListaMasiniDinFisier(const char* numeFisier) {
     Nod* lista = NULL;
     Masina m;
 
-    while (citireMasinaDinFisier(f, &m)) {
-        adaugaMasinaInLista(&lista, m);
+    while(citireMasinaDinFisier(f,&m))
+    {
+        adaugaMasinaInLista(&lista,m);
     }
 
     fclose(f);
     return lista;
 }
 
-void dezalocareListaMasini(Nod** lista) {
-    while (*lista) {
+void dezalocareListaMasini(Nod** lista)
+{
+    while(*lista)
+    {
         free((*lista)->info.model);
         free((*lista)->info.numeSofer);
         Nod* p = *lista;
@@ -133,7 +153,8 @@ void dezalocareListaMasini(Nod** lista) {
     }
 }
 
-int main() {
+int main( )
+{
     Nod* lista = citireListaMasiniDinFisier("masini2.txt");
     afisareListaMasini(lista);
     dezalocareListaMasini(&lista);
