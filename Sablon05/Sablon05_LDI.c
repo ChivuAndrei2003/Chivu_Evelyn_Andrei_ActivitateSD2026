@@ -82,6 +82,7 @@ void adaugaLaInceputInLista(ListaDubla* lista, Masina masinaNoua) {
     Nod* nodNou = (Nod*)malloc(sizeof(Nod));
     nodNou->info = masinaNoua;
     nodNou->prev = NULL;
+    nodNou->next = lista->first;
     if(lista->first != NULL)
     {
         lista->first->prev = nodNou;
@@ -119,14 +120,15 @@ ListaDubla citireLDMasiniDinFisier(const char* numeFisier) {
 	//prin apelul repetat al functiei citireMasinaDinFisier()
     //ATENTIE - la final inchidem fisierul/stream-ul
 
-    FILE* f = fopen(numeFisier,"masini.txt");
+    FILE* f= fopen(numeFisier,"r");
 
     ListaDubla lista;
 
     lista.first = NULL;
     lista.last = NULL;
-
-    while(!feof(f))
+    char buffer[200];
+    
+    while(fgets(buffer,100,f) != NULL)
     {
         Masina m = citireMasinaDinFisier(f);
         adaugaLaInceputInLista(&lista, m );
@@ -213,14 +215,16 @@ char* getNumeSoferMasinaScumpa(ListaDubla lista) {
 
     Nod* maxim = lista.first;
     lista.first = lista.first->next;
+
     while(lista.first != NULL)
     {
         if(lista.first->info.pret > maxim->info.pret)
         {
             maxim = lista.first;
-            lista.first = lista.first->next;
+            
         }
-       
+        lista.first = lista.first->next;
+
 
         
     }
