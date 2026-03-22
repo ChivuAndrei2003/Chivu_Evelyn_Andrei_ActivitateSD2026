@@ -205,7 +205,7 @@ float calculeazaPretulAvionuluiUnuiPilot (Nod* lista,const char* numePilot)
 int main ()
 {
 	Nod* cap = NULL;
-	cap = citireAvionDinFisier("avion.txt");
+	cap = citireListaAvionDinFisier("avion.txt");
 
 	afisareListaAvioane(cap);
 
