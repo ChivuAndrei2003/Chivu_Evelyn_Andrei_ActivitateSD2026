@@ -5,9 +5,9 @@
 
 //trebuie sa folositi fisierul masini.txt
 //sau va creati un alt fisier cu alte date
-typedef struct StructuraAvion Masina;
+typedef struct StructuraMasina Masina;
 
-struct StructuraAvion
+struct StructuraMasina
 {
     int id;
     int nrUsi;

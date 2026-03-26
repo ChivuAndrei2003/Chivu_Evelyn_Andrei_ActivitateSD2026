@@ -18,36 +18,44 @@ struct StructuraMasina
 typedef struct StructuraMasina Masina;
 
 //creare structura pentru un nod dintr-o lista simplu inlantuita
+struct Nod
+{
+    Masina info;
+    Nod* next;
+
+};
+typedef struct Nod Nod;
 
 //creare structura pentru tabela de dispersie
 // aceasta este un vector de liste
 struct HashTable
 {
     int dim;
+    Nod** table;
 };
 typedef struct HashTable HashTable;
 
 Masina citireMasinaDinFisier(FILE* file)
 {
     char buffer[100];
-	char sep[3] = ",\n";
-	fgets(buffer, 100, file);
-	char* aux;
-	Masina m1;
-	aux = strtok(buffer, sep);
-	m1.id = atoi(aux);
-	m1.nrUsi = atoi(strtok(NULL, sep));
-	m1.pret = atof(strtok(NULL, sep));
-	aux = strtok(NULL, sep);
-	m1.model = malloc(strlen(aux) + 1);
-	strcpy(m1.model, aux);
+    char sep[3] = ",\n";
+    fgets(buffer,100,file);
+    char* aux;
+    Masina m1;
+    aux = strtok(buffer,sep);
+    m1.id = atoi(aux);
+    m1.nrUsi = atoi(strtok(NULL,sep));
+    m1.pret = atof(strtok(NULL,sep));
+    aux = strtok(NULL,sep);
+    m1.model = malloc(strlen(aux) + 1);
+    strcpy(m1.model,aux);
 
-	aux = strtok(NULL, sep);
-	m1.numeSofer = malloc(strlen(aux) + 1);
-	strcpy(m1.numeSofer, aux);
+    aux = strtok(NULL,sep);
+    m1.numeSofer = malloc(strlen(aux) + 1);
+    strcpy(m1.numeSofer,aux);
 
-	m1.serie = *strtok(NULL, sep);
-	return m1;
+    m1.serie = *strtok(NULL,sep);
+    return m1;
 }
 
 void afisareMasina(Masina masina)
@@ -60,28 +68,53 @@ void afisareMasina(Masina masina)
     printf("Serie: %c\n\n",masina.serie);
 }
 
-void afisareListaMasini(/*lista de masini*/)
+void afisareListaMasini(Nod* head)
 {
     //afiseaza toate elemente de tip masina din lista dublu inlantuita
     //prin apelarea functiei afisareMasina()
+    while(head)
+    {
+        afisareMasina(head->info);
+        head = head->next;
+    }
 }
 
-void adaugaMasinaInLista(/*lista de masini*/ Masina masinaNoua)
+void adaugaMasinaInLista(Nod* head,Masina masinaNoua)
 {
     //adauga la final in lista primita o noua masina pe care o primim ca parametru
+    Nod* cap = head;
+    while(cap->next)
+    {
+        cap = cap->next;//parcurge nodes ca-sa ramana val.la ultimul nod din lista
+    }
+
+    Nod* nou = (Nod*)malloc(sizeof(Nod));
+    nou->info = masinaNoua;
+    nou->next = NULL;
+
+    cap->next = nou;
 }
 
 
 HashTable initializareHashTable(int dimensiune)
 {
-    HashTable ht;
+    HashTable* ht = malloc(sizeof(HashTable));
+    ht->dim = dimensiune;
+
+    ht->table = calloc(dimensiune, sizeof(Node*));
     //initializeaza vectorul de liste si seteaza fiecare lista ca fiind NULL;
     return ht;
 }
 
-int calculeazaHash(/*atribut al masini pentru clusterizare*/ int dimensiune)
+int calculeazaHash(char* key,int dimensiune)
 {
     // este calculat hash-ul in functie de dimensiunea tabelei si un atribut al masinii
+    int sum = 0;
+    for(int i = 0; key[i] ;i++)
+    {
+        sum += key[i];
+    }
+    return sum % dimensiune;
 }
 
 void inserareMasinaInTabela(HashTable hash,Masina galerie)
