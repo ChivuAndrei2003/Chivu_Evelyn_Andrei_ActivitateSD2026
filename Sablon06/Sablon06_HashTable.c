@@ -68,14 +68,14 @@ void afisareMasina(Masina masina)
     printf("Serie: %c\n\n",masina.serie);
 }
 
-void afisareListaMasini(Nod* head)
+void afisareListaMasini(Nod* masina)
 {
     //afiseaza toate elemente de tip masina din lista dublu inlantuita
     //prin apelarea functiei afisareMasina()
-    while(head)
+    while(masina)
     {
-        afisareMasina(head->info);
-        head = head->next;
+        afisareMasina(masina->info);
+        masina = masina->next;
     }
 }
 
@@ -85,7 +85,7 @@ void adaugaMasinaInLista(Nod* head,Masina masinaNoua)
     Nod* cap = head;
     while(cap->next)
     {
-        cap = cap->next;//parcurge nodes ca-sa ramana val.la ultimul nod din lista
+        cap = cap->next;
     }
 
     Nod* nou = (Nod*)malloc(sizeof(Nod));
@@ -98,12 +98,12 @@ void adaugaMasinaInLista(Nod* head,Masina masinaNoua)
 
 HashTable initializareHashTable(int dimensiune)
 {
-    HashTable* ht = malloc(sizeof(HashTable));
-    ht->dim = dimensiune;
+    
+    HashTable hash_table;
+    hash_table.dim = dimensiune;
+    hash_table.table =(Nod**)calloc(dimensiune,sizeof(Nod*));
 
-    ht->table = calloc(dimensiune, sizeof(Node*));
-    //initializeaza vectorul de liste si seteaza fiecare lista ca fiind NULL;
-    return ht;
+    return hash_table;
 }
 
 int calculeazaHash(char* key,int dimensiune)
@@ -121,19 +121,58 @@ void inserareMasinaInTabela(HashTable hash,Masina galerie)
 {
     //este folosit mecanismul CHAINING
     //este determinata pozitia si se realizeaza inserarea pe pozitia respectiva
+    int poz = calculeazaHash(galerie.model,sizeof(hash.dim));
+
+    if(hash.table[poz] == NULL)
+    {
+        hash.table[poz] = (Nod*)malloc(sizeof(Nod));
+        hash.table[poz]->info = galerie;
+        hash.table[poz]->next = NULL;
+    }
+    else
+    {
+        adaugaMasinaInLista(hash.table[poz], galerie);
+        
+    }
 }
 
-HashTable citireMasiniDinFisier(const char* numeFisier)
+HashTable citireMasiniDinFisier(const char* numeFisier,int dimensiune)
 {
     //functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
     //prin apelul repetat al functiei citireMasinaDinFisier()
     // aceste masini sunt inserate intr-o tabela de dispersie initializata aici
     //ATENTIE - la final inchidem fisierul/stream-ul
+
+    HashTable hash=initializareHashTable(dimensiune);
+    FILE* f = fopen(numeFisier,"r");
+
+    char buffer[100];
+    while(!feof(f))
+    {
+        Masina masina = citireMasinaDinFisier(f);
+        inserareMasinaInTabela(masina);
+    }
+    fclose(f);
+
+    return hash;
+
 }
 
 void afisareTabelaDeMasini(HashTable ht)
 {
     //sunt afisate toate masinile cu evidentierea clusterelor realizate
+    for(int i = 0;i < ht.dim;i++)
+    {
+        if(ht.table[i] != NULL)
+        {
+            printf("Pe pozitia %d avem urmatoarele masin:\n",i);
+            afisareListaMasini(ht.table[i]);
+        }
+        else
+        {
+            printf("Nu exista masini pe pozitia %d", i);
+        }
+    }
 }
 
 void dezalocareTabelaDeMasini(HashTable* ht)
