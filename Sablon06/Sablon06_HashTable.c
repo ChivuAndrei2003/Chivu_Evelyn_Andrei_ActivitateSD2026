@@ -6,6 +6,9 @@
 //trebuie sa folositi fisierul masini.txt
 //sau va creati un alt fisier cu alte date
 
+
+
+
 struct StructuraMasina
 {
 	int id;
@@ -21,7 +24,7 @@ typedef struct StructuraMasina Masina;
 struct Nod
 {
 	Masina info;
-	Nod* next;
+	struct Nod* next;
 
 };
 typedef struct Nod Nod;
@@ -31,7 +34,7 @@ typedef struct Nod Nod;
 struct HashTable
 {
 	int dim;
-	Nod** table;
+	struct Nod** table;
 };
 typedef struct HashTable HashTable;
 
@@ -107,13 +110,13 @@ HashTable initializareHashTable(int dimensiune)
 	return hash_table;
 }
 
-int calculeazaHash(char* key,int dimensiune)
+int calculeazaHash(const char* nume,int dimensiune)
 {
 	//este calculat hash-ul in functie de dim tabelei si un atribut al masinii
 	int sum = 0;
-	for(int i = 0; key[i];i++)
+	for(int i = 0; i<strlen(nume);i++)
 	{
-		sum += key[i];
+		sum += nume[i];
 	}
 	return sum % dimensiune;
 }
@@ -122,7 +125,7 @@ void inserareMasinaInTabela(HashTable hash,Masina galerie)
 {
 	//este folosit mecanismul CHAINING
 	//este determinata pozitia si se realizeaza inserarea pe pozitia respectiva
-	int poz = calculeazaHash(galerie.model,sizeof(hash.dim));
+	int poz = calculeazaHash(galerie.model,hash.dim);
 
 	if(hash.table[poz] == NULL)
 	{
@@ -147,7 +150,7 @@ HashTable citireMasiniDinFisier(const char* numeFisier,int dimensiune)
 	HashTable hash = initializareHashTable(dimensiune);
 	FILE* f = fopen(numeFisier,"r");
 
-	char buffer[100];
+	//char buffer[100];
 	while(!feof(f))
 	{
 		Masina masina = citireMasinaDinFisier(f);
@@ -166,13 +169,14 @@ void afisareTabelaDeMasini(HashTable ht)
 	{
 		if(ht.table[i] != NULL)
 		{
-			printf("Pe pozitia %d avem urmatoarele masin:\n",i);
+			printf("\nPe pozitia %d avem urmatoarele masin: \n",i);
 			afisareListaMasini(ht.table[i]);
 		}
 		else
 		{
-			printf("Nu exista masini pe pozitia %d",i);
+			printf("\n Nu avem masini pe pozitia %d\n",i);
 		}
+
 	}
 }
 
@@ -244,7 +248,7 @@ float* calculeazaPreturiMediiPerClustere(HashTable ht,int* nrClustere)
 		if(ht.table[i] != NULL)
 		{
 			preturi[*nrClustere] = calculeazaMediePeLista(ht.table[i]);
-			*(nrClustere)++;//nu *nrClustere++ pt ca doar muta pointerul 
+			(*nrClustere)++;//nu *nrClustere++ pt ca doar muta pointerul 
 		}
 	}
 
@@ -277,6 +281,7 @@ Masina getMasinaDupaNumeModel(HashTable ht,const char* nume_model_masina)
 	//trebuie sa modificam numele functiei 
 
 	Masina m;
+	m.id = -1;
 	int poz = calculeazaHash(nume_model_masina,ht.dim);
 
 	if(poz >= 0 && poz < ht.dim)
@@ -300,7 +305,7 @@ int main( )
 
 	for(int i = 0;i < nrClustere;i++)
 	{
-		printf(".2f",preturi[i]);
+		printf("Cluster %d : %.2f\n",i,preturi[i]);
 	}
 	printf("\n");
 
@@ -325,6 +330,7 @@ int main( )
 		printf("Modelul de masina cautat nu a fost gasit");
 	}
 
+	free(preturi);
 	dezalocareTabelaDeMasini(&hash_table);
 
 
