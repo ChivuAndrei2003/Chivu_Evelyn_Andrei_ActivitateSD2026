@@ -180,7 +180,16 @@ void dezalocareListaMasini(Nod** cap){
     Nod* head = *cap;
     while(head){
         Nod* temp =head;
+        head= head->next;
+        if(temp->masina.model != NULL ){
+            free(temp->masina.model);
+        }
+        if(temp->masina.numeSofer != NULL ){
+            free(temp->masina.numeSofer);
+        }
+        free(temp);
     }
+    *cap=NULL;
 }
 void dezalocareTabelaDeMasini(HashTable* ht)
 {
