@@ -175,9 +175,22 @@ void afisareTabelaDeMasini(HashTable ht)
     }
 }
 
+void dezalocareListaMasini(Nod** cap){
+    
+    Nod* head = *cap;
+    while(head){
+        Nod* temp =head;
+    }
+}
 void dezalocareTabelaDeMasini(HashTable* ht)
 {
     //sunt dezalocate toate masinile din tabela de dispersie
+    
+    for(int i=0;i<ht.dim;i++){
+        if(ht.table[i] != NULL){
+            free(ht.)
+        }
+    }
 }
 
 float* calculeazaPreturiMediiPerClustere(HashTable ht,int* nrClustere)
