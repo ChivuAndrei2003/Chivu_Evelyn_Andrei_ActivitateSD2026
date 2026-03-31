@@ -301,7 +301,7 @@ int main( )
 	int nrClustere = 3;
 	float* preturi = calculeazaPreturiMediiPerClustere(hash_table,&nrClustere);
 
-	printf("Preturile medii per clustere :\n");
+	printf("\nPreturile medii per clustere :\n");
 
 	for(int i = 0;i < nrClustere;i++)
 	{
