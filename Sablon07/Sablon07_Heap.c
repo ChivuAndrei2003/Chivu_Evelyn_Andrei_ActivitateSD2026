@@ -88,7 +88,7 @@ void filtreazaHeap(Heap heap,int pozitieNod)
 		poz_max = poz_fiu_dreapta;
 	}
 
-	else if ( poz_max!=pozitieNod )
+	 if ( poz_max!=pozitieNod )
 	{
 		Masina aux = heap.vector[poz_max];
 		heap.vector[poz_max] = heap.vector[pozitieNod];
@@ -112,13 +112,13 @@ Heap citireHeapDeMasiniDinFisier(const char* numeFisier)
 	FILE* f = fopen(numeFisier,"r");
 	Heap heap = initializareHeap(10);
 	char buffer[100];
-	while(fgets(buffer,sizeof(buffer),stdin))
+	while(!feof(f))
 	{
 		heap.vector[heap.nrMasini++] = citireMasinaDinFisier(f);
 	}
 	fclose(f);
 
-	for(int i = (heap.nrMasini - 2) / 2;i >= 0;i++)
+	for(int i = (heap.nrMasini - 2) / 2;i >= 0;i--)
 	{
 		filtreazaHeap(heap,i);
 	}
