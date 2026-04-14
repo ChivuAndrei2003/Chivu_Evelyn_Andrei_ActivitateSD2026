@@ -6,7 +6,8 @@
 //trebuie sa folositi fisierul masini.txt
 //sau va creati un alt fisier cu alte date
 
-struct StructuraMasina {
+struct StructuraMasina
+{
 	int id;
 	int nrUsi;
 	float pret;
@@ -15,99 +16,172 @@ struct StructuraMasina {
 	unsigned char serie;
 };
 typedef struct StructuraMasina Masina;
+typedef struct Nod Nod;
 
-struct Nod {
+struct Nod
+{
 	Nod* stanga;
-	Nod* dreapta ;
+	Nod* dreapta;
 	Masina info;
-}
-typedef struct Nod nod;
+};
+
 
 //creare structura pentru un nod dintr-un arbore binar de cautare
 
-Masina citireMasinaDinFisier(FILE* file) {
+Masina citireMasinaDinFisier(FILE* file)
+{
 	char buffer[100];
 	char sep[3] = ",\n";
-	fgets(buffer, 100, file);
+	fgets(buffer,100,file);
 	char* aux;
 	Masina m1;
-	aux = strtok(buffer, sep);
+	aux = strtok(buffer,sep);
 	m1.id = atoi(aux);
-	m1.nrUsi = atoi(strtok(NULL, sep));
-	m1.pret= atof(strtok(NULL, sep));
-	aux = strtok(NULL, sep);
+	m1.nrUsi = atoi(strtok(NULL,sep));
+	m1.pret = atof(strtok(NULL,sep));
+	aux = strtok(NULL,sep);
 	m1.model = malloc(strlen(aux) + 1);
-	strcpy_s(m1.model, strlen(aux) + 1, aux);
+	strcpy_s(m1.model,strlen(aux) + 1,aux);
 
-	aux = strtok(NULL, sep);
+	aux = strtok(NULL,sep);
 	m1.numeSofer = malloc(strlen(aux) + 1);
-	strcpy_s(m1.numeSofer, strlen(aux) + 1, aux);
+	strcpy_s(m1.numeSofer,strlen(aux) + 1,aux);
 
-	m1.serie = *strtok(NULL, sep);
+	m1.serie = *strtok(NULL,sep);
 	return m1;
 }
 
-void afisareMasina(Masina masina) {
-	printf("Id: %d\n", masina.id);
-	printf("Nr. usi : %d\n", masina.nrUsi);
-	printf("Pret: %.2f\n", masina.pret);
-	printf("Model: %s\n", masina.model);
-	printf("Nume sofer: %s\n", masina.numeSofer);
-	printf("Serie: %c\n\n", masina.serie);
+void afisareMasina(Masina masina)
+{
+	printf("Id: %d\n",masina.id);
+	printf("Nr. usi : %d\n",masina.nrUsi);
+	printf("Pret: %.2f\n",masina.pret);
+	printf("Model: %s\n",masina.model);
+	printf("Nume sofer: %s\n",masina.numeSofer);
+	printf("Serie: %c\n\n",masina.serie);
 }
 
 
-void adaugaMasinaInArbore(/*arborele de masini*/ Masina masinaNoua) {
+void adaugaMasinaInArbore(Nod** root,Masina masinaNoua)
+{
 	//adauga o noua masina pe care o primim ca parametru in arbore,
 	//astfel incat sa respecte princiippile de arbore binar de cautare
 	//dupa o anumita cheie pe care o decideti - poate fi ID
+
+	if((*root) != NULL)
+	{
+
+
+		if(masinaNoua.pret < (*root)->info.pret)
+		{
+			//echivalent dupa model. prof: adaugaMasinaInArbore(&((*root)->stanga),masinaNoua);
+			adaugaMasinaInArbore(&(*root)->stanga,masinaNoua);
+		}
+		else if(masinaNoua.pret > (*root)->info.pret)
+		{
+			adaugaMasinaInArbore(&(*root)->dreapta,masinaNoua);
+		}
+
+		else
+		{
+			if((*root)->info.model!= NULL) { free((*root)->info.model); }
+
+			if((*root)->info.numeSofer != NULL) { free((*root)->info.numeSofer); }
+
+			//IMPORTANT:
+			//In C cast-ul e implicit => nu-i nevoie de 
+			  // (*root) =(char*) malloc(sizeof(Nod)); ca in C++
+			(*root) = malloc(sizeof(Nod));
+			(*root)->info = masinaNoua;
+			(*root)->info.id = masinaNoua.id;
+			(*root)->info.serie = masinaNoua.serie;
+
+			(*root)->info.model = malloc(strlen(masinaNoua.model) + 1);
+			strcpy((*root)->info.model,masinaNoua.model);
+
+			(*root)->info.numeSofer = malloc(strlen(masinaNoua.numeSofer) + 1);
+			strcpy((*root)->info.numeSofer,masinaNoua.numeSofer);
+		}
+	}
+
+	else
+	{
+		(*root) = malloc(sizeof(Nod));
+		(*root)->info = masinaNoua;
+		(*root)->info.id = masinaNoua.id;
+		(*root)->info.pret = masinaNoua.pret;
+		(*root)->info.serie = masinaNoua.serie;
+
+		(*root)->info.model = malloc(strlen(masinaNoua.model) + 1);
+		strcpy((*root)->info.model,masinaNoua.model);
+
+		(*root)->info.numeSofer = malloc(strlen(masinaNoua.numeSofer) + 1);
+		strcpy((*root)->info.numeSofer,masinaNoua.numeSofer);
+
+		(*root)->stanga = NULL;
+		(*root)->dreapta = NULL;
+	}
 }
 
-void* citireArboreDeMasiniDinFisier(const char* numeFisier) {
+void* citireArboreDeMasiniDinFisier(const char* numeFisier)
+{
 	//functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
 	//prin apelul repetat al functiei citireMasinaDinFisier()
 	//ATENTIE - la final inchidem fisierul/stream-ul
+
+	FILE* f = fopen(numeFisier,"r");
+
+
+
 }
 
-void afisareMasiniDinArbore(/*arbore de masini*/) {
+void afisareMasiniDinArbore(/*arbore de masini*/)
+{
 	//afiseaza toate elemente de tip masina din arborele creat
 	//prin apelarea functiei afisareMasina()
 	//parcurgerea arborelui poate fi realizata in TREI moduri
 	//folositi toate cele TREI moduri de parcurgere
 }
 
-void dezalocareArboreDeMasini(/*arbore de masini*/) {
+void dezalocareArboreDeMasini(/*arbore de masini*/)
+{
 	//sunt dezalocate toate masinile si arborele de elemente
 }
 
-Masina getMasinaByID(/*arborele de masini*/int id) {
+Masina getMasinaByID(/*arborele de masini*/int id)
+{
 	Masina m;
 
 	return m;
 }
 
-int determinaNumarNoduri(/*arborele de masini*/) {
+int determinaNumarNoduri(/*arborele de masini*/)
+{
 	//calculeaza numarul total de noduri din arborele binar de cautare
 	return 0;
 }
 
-int calculeazaInaltimeArbore(/*arbore de masini*/) {
+int calculeazaInaltimeArbore(/*arbore de masini*/)
+{
 	//calculeaza inaltimea arborelui care este data de 
 	//lungimea maxima de la radacina pana la cel mai indepartat nod frunza
- return 0;
+	return 0;
 }
 
-float calculeazaPretTotal(/*arbore de masini*/) {
+float calculeazaPretTotal(/*arbore de masini*/)
+{
 	//calculeaza pretul tuturor masinilor din arbore.
 	return 0;
 }
 
-float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer) {
+float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer)
+{
 	//calculeaza pretul tuturor  masinilor unui sofer.
- return 0;
+	return 0;
 }
 
-int main() {
+int main( )
+{
 
 	return 0;
-  }
+}
