@@ -111,7 +111,7 @@ Heap citireHeapDeMasiniDinFisier(const char* numeFisier)
 
 	FILE* f = fopen(numeFisier,"r");
 	Heap heap = initializareHeap(10);
-	char buffer[100];
+	
 	while(!feof(f))
 	{
 		heap.vector[heap.nrMasini++] = citireMasinaDinFisier(f);
