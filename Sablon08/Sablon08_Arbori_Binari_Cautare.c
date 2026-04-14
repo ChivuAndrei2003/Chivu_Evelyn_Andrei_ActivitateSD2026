@@ -70,22 +70,19 @@ void adaugaMasinaInArbore(Nod** root,Masina masinaNoua)
 
 	if((*root) != NULL)
 	{
-
-
-		if(masinaNoua.pret < (*root)->info.pret)
+		if(masinaNoua.id < (*root)->info.id)
 		{
 			//echivalent dupa model. prof: adaugaMasinaInArbore(&((*root)->stanga),masinaNoua);
 			adaugaMasinaInArbore(&(*root)->stanga,masinaNoua);
 		}
-		else if(masinaNoua.pret > (*root)->info.pret)
+		else if(masinaNoua.id > (*root)->info.id)
 		{
 			adaugaMasinaInArbore(&(*root)->dreapta,masinaNoua);
 		}
 
 		else
 		{
-			if((*root)->info.model!= NULL) { free((*root)->info.model); }
-
+			if((*root)->info.model != NULL) { free((*root)->info.model); }
 			if((*root)->info.numeSofer != NULL) { free((*root)->info.numeSofer); }
 
 			//IMPORTANT:
@@ -93,7 +90,7 @@ void adaugaMasinaInArbore(Nod** root,Masina masinaNoua)
 			  // (*root) =(char*) malloc(sizeof(Nod)); ca in C++
 			(*root) = malloc(sizeof(Nod));
 			(*root)->info = masinaNoua;
-			(*root)->info.id = masinaNoua.id;
+			(*root)->info.pret = masinaNoua.pret;
 			(*root)->info.serie = masinaNoua.serie;
 
 			(*root)->info.model = malloc(strlen(masinaNoua.model) + 1);
@@ -130,48 +127,140 @@ void* citireArboreDeMasiniDinFisier(const char* numeFisier)
 	//ATENTIE - la final inchidem fisierul/stream-ul
 
 	FILE* f = fopen(numeFisier,"r");
+	Nod* root = NULL;
+	while(!feof(f))
+	{
+		Masina m = citireMasinaDinFisier((f));
+		adaugaMasinaInArbore(&root,m);
+		free(m.model);
+		free(m.numeSofer);
+	}
+	fclose(f);
 
-
-
+	return root;
 }
 
-void afisareMasiniDinArbore(/*arbore de masini*/)
+void afisareArboreInOrdine(Nod* root)
+{
+	if(root != NULL)
+	{
+		afisareArboreInOrdine(root->stanga);
+		afisareMasina(root->info);
+		afisareArboreInOrdine(root->dreapta);
+	}
+};
+
+void afisareArborePreOrdine(Nod* root)
+{
+	if(root != NULL)
+	{
+		afisareMasina(root->info);
+		afisareArborePreOrdine(root->stanga);
+		afisareArborePreOrdine(root->dreapta);
+	}
+};
+
+void afisareArborePostOrdine(Nod* root)
+{
+	if(root != NULL)
+	{
+		afisareArborePostOrdine(root->stanga);
+		afisareArborePostOrdine(root->dreapta);
+		afisareArborePostOrdine(root->info);
+	}
+};
+
+void afisareMasiniDinArbore(Nod* root)
 {
 	//afiseaza toate elemente de tip masina din arborele creat
 	//prin apelarea functiei afisareMasina()
 	//parcurgerea arborelui poate fi realizata in TREI moduri
 	//folositi toate cele TREI moduri de parcurgere
+	printf("\nParcurgere si afisare arbore in ordine :\n ");
+	afisareArboreInOrdine(root);
+
+	printf("\nParcurgere si afisare arbore in preordine :\n ");
+	afisareArborePreOrdine(root);
+
+	printf("\nParcurgere si afisare arbore in postordine :\n ");
+	afisareArborePostOrdine(root);
+
 }
 
-void dezalocareArboreDeMasini(/*arbore de masini*/)
+void dezalocareArboreDeMasini(Nod** root)
 {
 	//sunt dezalocate toate masinile si arborele de elemente
+	if((*radacina) != NULL)
+	{
+		dezalocareArboreDeMasini(&(*root)->stanga);
+		dezalocareArboreDeMasini(&(*root)->dreapta);
+		free((*root)->info.model);
+		free((*root)->info.numeSofer);
+		free(*root);
+		*root = NULL;
+	}
 }
 
-Masina getMasinaByID(/*arborele de masini*/int id)
+Masina getMasinaByID(Nod* root,int id)
 {
 	Masina m;
+	m.id = -1;
+
+	if(id > root->info.id)
+	{
+		return getMasinaByID(root->dreapta,id);
+	}
+	else if(id < root->info.id)
+	{
+		return getMasinaByID(root->stanga,id);
+	}
+	else
+	{
+		m = root->info;
+		m.numeSofer = malloc(strlen(root->info.numeSofer) + 1);
+		strcpy(m.numeSofer,root->info.numeSofer);
+
+		m.model = malloc(strlen(root->info.model) + 1);
+		strcpy(m.model,root->info.model);
+
+		return m;
+	}
+
 
 	return m;
 }
 
-int determinaNumarNoduri(/*arborele de masini*/)
+int determinaNumarNoduri(Nod* root)
 {
 	//calculeaza numarul total de noduri din arborele binar de cautare
-	return 0;
+	if(root == NULL) return 0;
+
+	int s = determinaNumarNoduri(root->stanga);
+	int d = determinaNumarNoduri(root->dreapta);
+
+	return 1 + s + d;
 }
 
-int calculeazaInaltimeArbore(/*arbore de masini*/)
+int calculeazaInaltimeArbore(Nod* root)
 {
 	//calculeaza inaltimea arborelui care este data de 
 	//lungimea maxima de la radacina pana la cel mai indepartat nod frunza
-	return 0;
+	if(root == NULL) return -1;
+
+	int inaltimeStanga = calculeazaInaltimeArbore(root->stanga);
+	int inaltimeDreapta = calculeazaInaltimeArbore(root->dreapta);
+
+	return (inaltimeStanga > inaltimeDreapta ? inaltimeStanga : inaltimeDreapta) + 1;
 }
 
-float calculeazaPretTotal(/*arbore de masini*/)
+float calculeazaPretTotal(Nod* root)
 {
 	//calculeaza pretul tuturor masinilor din arbore.
-	return 0;
+
+	if(root == NULL) return 0;
+
+	float pret=
+		return 0;
 }
 
 float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer)
