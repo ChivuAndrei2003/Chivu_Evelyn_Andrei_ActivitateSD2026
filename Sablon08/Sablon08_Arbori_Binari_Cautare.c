@@ -28,7 +28,7 @@ struct Nod
 
 //creare structura pentru un nod dintr-un arbore binar de cautare
 
-int citireMasinaDinFisier(FILE* file, Masina* m1)
+int citireMasinaDinFisier(FILE* file,Masina* m1)
 {
 	char buffer[100];
 	char sep[3] = ",\n";
@@ -149,7 +149,7 @@ Nod* citireArboreDeMasiniDinFisier(const char* numeFisier)
 	//prin apelul repetat al functiei citireMasinaDinFisier()
 	//ATENTIE - la final inchidem fisierul/stream-ul
 	FILE* f = fopen(numeFisier,"r");
-	
+
 	if(f == NULL)
 	{
 		printf("Fisierul %s nu a putut fi deschis.\n",numeFisier);
@@ -193,7 +193,7 @@ void afisareArborePostOrdine(Nod* root)
 {
 	if(root != NULL)
 	{
-		
+
 		afisareArborePostOrdine(root->stanga);
 		afisareArborePostOrdine(root->dreapta);
 		afisareMasina(root->info);
