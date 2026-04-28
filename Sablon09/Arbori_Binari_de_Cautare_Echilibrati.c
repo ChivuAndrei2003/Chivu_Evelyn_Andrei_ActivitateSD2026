@@ -18,6 +18,14 @@ struct StructuraMasina
 typedef struct StructuraMasina Masina;
 
 //creare structura pentru un nod dintr-un arbore binar de cautare
+struct Nod
+{
+    Masina info;
+    Nod* next;
+    Nod* prev;
+}
+
+typedef struct Nod Nod;
 
 Masina citireMasinaDinFisier(FILE* file)
 {
@@ -52,56 +60,57 @@ void afisareMasina(Masina masina)
     printf("Serie: %c\n\n",masina.serie);
 }
 
-//int calculeazaInaltimeArbore(/*arbore de masini*/) {
-//	//calculeaza inaltimea arborelui care este data de 
-//	//lungimea maxima de la radacina pana la cel mai indepartat nod frunza
-//	return 0;
-//}
-
-//ALTE FUNCTII NECESARE:
-// - aici veti adauga noile functii de care aveti nevoie.
-
-void adaugaMasinaInArboreEchilibrat(/*arborele de masini*/ Masina masinaNoua)
+int calculeazaInaltimeArbore(/*arbore de masini*/)
 {
-    //adauga o noua masina pe care o primim ca parametru in arbore,
-    //astfel incat sa respecte principiile de arbore binar de cautare ECHILIBRAT
-    //dupa o anumita cheie pe care o decideti - poate fi ID
-}
+    //	//calculeaza inaltimea arborelui care este data de 
+    //	//lungimea maxima de la radacina pana la cel mai indepartat nod frunza
+    //	return 0;
+    //}
 
-void* citireArboreDeMasiniDinFisier(const char* numeFisier)
-{
-    //functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
-    //prin apelul repetat al functiei citireMasinaDinFisier()
-    //ATENTIE - la final inchidem fisierul/stream-ul
-}
+    //ALTE FUNCTII NECESARE:
+    // - aici veti adauga noile functii de care aveti nevoie.
 
-void afisareMasiniDinArbore(/*arbore de masini*/)
-{
-    //afiseaza toate elemente de tip masina din arborele creat
-    //prin apelarea functiei afisareMasina()
-    //parcurgerea arborelui poate fi realizata in TREI moduri
-    //folositi toate cele TREI moduri de parcurgere
-}
+    void adaugaMasinaInArboreEchilibrat(/*arborele de masini*/ Masina masinaNoua)
+    {
+        //adauga o noua masina pe care o primim ca parametru in arbore,
+        //astfel incat sa respecte principiile de arbore binar de cautare ECHILIBRAT
+        //dupa o anumita cheie pe care o decideti - poate fi ID
+    }
 
-void dezalocareArboreDeMasini(/*arbore de masini*/)
-{
-    //sunt dezalocate toate masinile si arborele de elemente
-}
+    void* citireArboreDeMasiniDinFisier(const char* numeFisier)
+    {
+        //functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
+        //prin apelul repetat al functiei citireMasinaDinFisier()
+        //ATENTIE - la final inchidem fisierul/stream-ul
+    }
 
-//Preluati urmatoarele functii din laboratorul precedent.
-//Acestea ar trebuie sa functioneze pe noul arbore echilibrat.
+    void afisareMasiniDinArbore(/*arbore de masini*/)
+    {
+        //afiseaza toate elemente de tip masina din arborele creat
+        //prin apelarea functiei afisareMasina()
+        //parcurgerea arborelui poate fi realizata in TREI moduri
+        //folositi toate cele TREI moduri de parcurgere
+    }
 
-Masina getMasinaByID(/*arborele de masini*/int id);
+    void dezalocareArboreDeMasini(/*arbore de masini*/)
+    {
+        //sunt dezalocate toate masinile si arborele de elemente
+    }
 
-int determinaNumarNoduri(/*arborele de masini*/);
+    //Preluati urmatoarele functii din laboratorul precedent.
+    //Acestea ar trebuie sa functioneze pe noul arbore echilibrat.
 
-float calculeazaPretTotal(/*arbore de masini*/);
+    Masina getMasinaByID(/*arborele de masini*/int id);
 
-float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer);
+    int determinaNumarNoduri(/*arborele de masini*/);
 
-int main( )
-{
+    float calculeazaPretTotal(/*arbore de masini*/);
+
+    float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer);
+
+    int main( )
+    {
 
 
-    return 0;
-}
+        return 0;
+    }
