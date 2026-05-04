@@ -16,16 +16,15 @@ struct StructuraMasina
     unsigned char serie;
 };
 typedef struct StructuraMasina Masina;
+typedef struct Nod Nod;
 
 //creare structura pentru un nod dintr-un arbore binar de cautare
 struct Nod
 {
     Masina info;
-    Nod* next;
-    Nod* prev;
-}
-
-typedef struct Nod Nod;
+    Nod* stanga;
+    Nod* dreapta;
+};
 
 Masina citireMasinaDinFisier(FILE* file)
 {
@@ -40,11 +39,11 @@ Masina citireMasinaDinFisier(FILE* file)
     m1.pret = atof(strtok(NULL,sep));
     aux = strtok(NULL,sep);
     m1.model = malloc(strlen(aux) + 1);
-    strcpy_s(m1.model,strlen(aux) + 1,aux);
+    strcpy(m1.model,aux);
 
     aux = strtok(NULL,sep);
     m1.numeSofer = malloc(strlen(aux) + 1);
-    strcpy_s(m1.numeSofer,strlen(aux) + 1,aux);
+    strcpy(m1.numeSofer,aux);
 
     m1.serie = *strtok(NULL,sep);
     return m1;
@@ -60,57 +59,81 @@ void afisareMasina(Masina masina)
     printf("Serie: %c\n\n",masina.serie);
 }
 
-int calculeazaInaltimeArbore(/*arbore de masini*/)
+int calculeazaInaltimeArbore(Nod* arbore)
 {
-    //	//calculeaza inaltimea arborelui care este data de 
-    //	//lungimea maxima de la radacina pana la cel mai indepartat nod frunza
-    //	return 0;
-    //}
-
-    //ALTE FUNCTII NECESARE:
-    // - aici veti adauga noile functii de care aveti nevoie.
-
-    void adaugaMasinaInArboreEchilibrat(/*arborele de masini*/ Masina masinaNoua)
+    //calculeaza inaltimea arborelui care este data de 
+    //lungimea maxima de la radacina pana la cel mai indepartat nod frunza
+    if(arbore != NULL)
     {
-        //adauga o noua masina pe care o primim ca parametru in arbore,
-        //astfel incat sa respecte principiile de arbore binar de cautare ECHILIBRAT
-        //dupa o anumita cheie pe care o decideti - poate fi ID
+        int inaltimeStanga = calculeazaInaltimeArbore(arbore->stanga);
+        int inaltimeDreapta = calculeazaInaltimeArbore(arbore->dreapta);
+
+        return(inaltimeStanga > inaltimeDreapta ? inaltimeStanga : inaltimeDreapta) + 1;
     }
 
-    void* citireArboreDeMasiniDinFisier(const char* numeFisier)
-    {
-        //functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
-        //prin apelul repetat al functiei citireMasinaDinFisier()
-        //ATENTIE - la final inchidem fisierul/stream-ul
-    }
+    return 0;
+}
 
-    void afisareMasiniDinArbore(/*arbore de masini*/)
-    {
-        //afiseaza toate elemente de tip masina din arborele creat
-        //prin apelarea functiei afisareMasina()
-        //parcurgerea arborelui poate fi realizata in TREI moduri
-        //folositi toate cele TREI moduri de parcurgere
-    }
+// balance_factor = inaltime stanga - inaltime dreapta 
 
-    void dezalocareArboreDeMasini(/*arbore de masini*/)
-    {
-        //sunt dezalocate toate masinile si arborele de elemente
-    }
+// BalanceFactor = 0 -> stanga si dreapta au aceeași înaltime
+// BalanceFactor = 1 -> stanga este cu 1 nivel mai inalta
+// BalanceFactor =-1 -> dreapta este cu 1 nivel mai înalta
+// BalanceFactor = 2 -> arbore dezechilibrat spre stanga
+// BalanceFactor =-2 -> arbore dezechilibrat spre dreapta
+int calculeazaBalanceFactor(Nod* arbore)
+{
+    return calculeazaInaltimeArbore(arbore->stanga)
+        - calculeazaInaltimeArbore(arbore->dreapta);
 
-    //Preluati urmatoarele functii din laboratorul precedent.
-    //Acestea ar trebuie sa functioneze pe noul arbore echilibrat.
+}
 
-    Masina getMasinaByID(/*arborele de masini*/int id);
+void adaugaMasinaInArboreEchilibrat(Nod** arbore,Masina masinaNoua)
+{
+    //adauga o noua masina pe care o primim ca parametru in arbore,
+    //astfel incat sa respecte principiile de arbore binar de cautare ECHILIBRAT
+    //dupa o anumita cheie pe care o decideti - poate fi ID
 
-    int determinaNumarNoduri(/*arborele de masini*/);
-
-    float calculeazaPretTotal(/*arbore de masini*/);
-
-    float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer);
-
-    int main( )
+    if(arbore != NULL)
     {
 
-
-        return 0;
     }
+}
+
+void* citireArboreDeMasiniDinFisier(const char* numeFisier)
+{
+    //functia primeste numele fisierului, il deschide si citeste toate masinile din fisier
+    //prin apelul repetat al functiei citireMasinaDinFisier()
+    //ATENTIE - la final inchidem fisierul/stream-ul
+}
+
+void afisareMasiniDinArbore(/*arbore de masini*/)
+{
+    //afiseaza toate elemente de tip masina din arborele creat
+    //prin apelarea functiei afisareMasina()
+    //parcurgerea arborelui poate fi realizata in TREI moduri
+    //folositi toate cele TREI moduri de parcurgere
+}
+
+void dezalocareArboreDeMasini(/*arbore de masini*/)
+{
+    //sunt dezalocate toate masinile si arborele de elemente
+}
+
+//Preluati urmatoarele functii din laboratorul precedent.
+//Acestea ar trebuie sa functioneze pe noul arbore echilibrat.
+
+Masina getMasinaByID(/*arborele de masini*/int id);
+
+int determinaNumarNoduri(/*arborele de masini*/);
+
+float calculeazaPretTotal(/*arbore de masini*/);
+
+float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer);
+
+int main( )
+{
+
+
+    return 0;
+}
