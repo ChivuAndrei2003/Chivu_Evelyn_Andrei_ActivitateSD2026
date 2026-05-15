@@ -93,12 +93,10 @@ Masina* citireVectorMasiniFisier (const char* numeFisier,int* nrMasiniCitite)
 	FILE* file = fopen(numeFisier,"r");
 	Masina* masini = NULL;
 
-	do
+	while(!feof(file))
 	{
 		adaugaMasinaInVector(&masini,nrMasiniCitite,citireMasinaFisier(file));
 	}
-	while(!feof(file));
-
 	fclose(file);
 
 	return masini;
@@ -136,7 +134,6 @@ int main ( )
 	printf("\nDupa dezalocare:\n");
 	printf("nrMasini = %d\n",nrMasini);
 	printf("masini = %p\n",masini);
-
 
 	return 0;
 }

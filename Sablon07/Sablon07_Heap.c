@@ -88,7 +88,7 @@ void filtreazaHeap(Heap heap,int pozitieNod)
 		poz_max = poz_fiu_dreapta;
 	}
 
-	 if ( poz_max!=pozitieNod )
+	if(poz_max != pozitieNod)
 	{
 		Masina aux = heap.vector[poz_max];
 		heap.vector[poz_max] = heap.vector[pozitieNod];
@@ -97,9 +97,9 @@ void filtreazaHeap(Heap heap,int pozitieNod)
 		if(poz_max <= (heap.nrMasini - 2) / 2)
 		{
 			filtreazaHeap(heap,poz_max);
-	 }
+		}
 	}
-	
+
 }
 
 Heap citireHeapDeMasiniDinFisier(const char* numeFisier)
@@ -111,7 +111,7 @@ Heap citireHeapDeMasiniDinFisier(const char* numeFisier)
 
 	FILE* f = fopen(numeFisier,"r");
 	Heap heap = initializareHeap(10);
-	
+
 	while(!feof(f))
 	{
 		heap.vector[heap.nrMasini++] = citireMasinaDinFisier(f);
@@ -148,7 +148,7 @@ Masina extrageMasina(Heap* heap)
 	//extrage si returneaza masina de pe prima pozitie
 	//elementul extras nu il stergem...doar il ascundem
 
-	Masina masinaInvalida = { 0, 0, 0, NULL, NULL, 0 };
+	Masina masinaInvalida = {0, 0, 0, NULL, NULL, 0};
 
 	if(heap->nrMasini > 0)
 	{
@@ -159,7 +159,7 @@ Masina extrageMasina(Heap* heap)
 
 		for(int i = (heap->nrMasini - 2) / 2;i >= 0;i--)
 		{
-			filtreazaHeap(*heap, i);
+			filtreazaHeap(*heap,i);
 		}
 		return masina;
 	}
@@ -191,7 +191,7 @@ int main( )
 	afisareMasina(extrageMasina(&heap));
 	afisareMasina(extrageMasina(&heap));
 	afisareMasina(extrageMasina(&heap));
-	
+
 
 	printf("Heap-ul ascuns este :\n");
 	afiseazaHeapAscuns(heap);

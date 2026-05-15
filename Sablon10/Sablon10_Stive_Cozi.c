@@ -21,25 +21,10 @@ Masina citireMasinaDinFisier(FILE* file)
 {
     char buffer[100];
     char sep[3] = ",\n";
+    fgets(buffer,100,file);
     char* aux;
     Masina m1;
-    m1.id = -1;
-    m1.nrUsi = 0;
-    m1.pret = 0;
-    m1.model = NULL;
-    m1.numeSofer = NULL;
-    m1.serie = '\0';
-
-    if(fgets(buffer,100,file) == NULL)
-    {
-        return m1;
-    }
-
     aux = strtok(buffer,sep);
-    if(aux == NULL)
-    {
-        return m1;
-    }
     m1.id = atoi(aux);
     m1.nrUsi = atoi(strtok(NULL,sep));
     m1.pret = atof(strtok(NULL,sep));
@@ -114,10 +99,6 @@ Nod* citireStackMasiniDinFisier(const char* numeFisier)
 {
     FILE* f = fopen(numeFisier,"r");
     Nod* stiva = NULL;
-    if(f == NULL)
-    {
-        return stiva;
-    }
 
     while(!feof(f))
     {
@@ -224,10 +205,6 @@ Coada citireCoadaDeMasiniDinFisier(const char* numeFisier)
     Coada coada;
     coada.fata = NULL;
     coada.spate = NULL;
-    if(f == NULL)
-    {
-        return coada;
-    }
 
     while(!feof(f))
     {
@@ -260,12 +237,6 @@ Masina getMasinaByID(Nod** stiva,int id)
 {
     Nod* tmp = NULL;
     Masina masinaCautata;
-    masinaCautata.id = -1;
-    masinaCautata.nrUsi = 0;
-    masinaCautata.pret = 0;
-    masinaCautata.model = NULL;
-    masinaCautata.numeSofer = NULL;
-    masinaCautata.serie = '\0';
 
     while((*stiva) != NULL)
     {

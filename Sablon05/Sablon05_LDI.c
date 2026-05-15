@@ -134,7 +134,7 @@ ListaDubla citireLDMasiniDinFisier(const char* numeFisier)
 	lista.last = NULL;
 	char buffer[200];
 
-	while(fgets(buffer,100,f) != NULL)
+	while(!feof(f))
 	{
 		Masina m = citireMasinaDinFisier(f);
 		adaugaLaInceputInLista(&lista,m);
