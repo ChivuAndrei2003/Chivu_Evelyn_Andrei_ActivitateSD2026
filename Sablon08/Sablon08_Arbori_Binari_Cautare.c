@@ -28,50 +28,27 @@ struct Nod
 
 //creare structura pentru un nod dintr-un arbore binar de cautare
 
-int citireMasinaDinFisier(FILE* file,Masina* m1)
+Masina citireMasinaDinFisier(FILE* file)
 {
 	char buffer[100];
 	char sep[3] = ",\n";
-	if(fgets(buffer,100,file) == NULL)
-	{
-		return 0;
-	}
+	fgets(buffer,100,file);
 	char* aux;
+	Masina m1;
 	aux = strtok(buffer,sep);
-	if(aux == NULL) { return 0; }
-	m1->id = atoi(aux);
+	m1.id = atoi(aux);
+	m1.nrUsi = atoi(strtok(NULL,sep));
+	m1.pret = atof(strtok(NULL,sep));
+	aux = strtok(NULL,sep);
+	m1.model = malloc(strlen(aux) + 1);
+	strcpy(m1.model,aux);
 
 	aux = strtok(NULL,sep);
-	if(aux == NULL) { return 0; }
-	m1->nrUsi = atoi(aux);
+	m1.numeSofer = malloc(strlen(aux) + 1);
+	strcpy(m1.numeSofer,aux);
 
-	aux = strtok(NULL,sep);
-	if(aux == NULL) { return 0; }
-	m1->pret = atof(aux);
-
-	aux = strtok(NULL,sep);
-	if(aux == NULL) { return 0; }
-	m1->model = malloc(strlen(aux) + 1);
-	strcpy(m1->model,aux);
-
-	aux = strtok(NULL,sep);
-	if(aux == NULL)
-	{
-		free(m1->model);
-		return 0;
-	}
-	m1->numeSofer = malloc(strlen(aux) + 1);
-	strcpy(m1->numeSofer,aux);
-
-	aux = strtok(NULL,sep);
-	if(aux == NULL)
-	{
-		free(m1->model);
-		free(m1->numeSofer);
-		return 0;
-	}
-	m1->serie = *aux;
-	return 1;
+	m1.serie = *strtok(NULL,sep);
+	return m1;
 }
 
 void afisareMasina(Masina masina)
@@ -150,16 +127,11 @@ Nod* citireArboreDeMasiniDinFisier(const char* numeFisier)
 	//ATENTIE - la final inchidem fisierul/stream-ul
 	FILE* f = fopen(numeFisier,"r");
 
-	if(f == NULL)
-	{
-		printf("Fisierul %s nu a putut fi deschis.\n",numeFisier);
-		return NULL;
-	}
-
 	Nod* root = NULL;
-	Masina m;
-	while(citireMasinaDinFisier(f,&m))
+
+	while(!feof(f))
 	{
+		Masina m = citireMasinaDinFisier(f);
 		adaugaMasinaInArbore(&root,m);
 		free(m.model);
 		free(m.numeSofer);
